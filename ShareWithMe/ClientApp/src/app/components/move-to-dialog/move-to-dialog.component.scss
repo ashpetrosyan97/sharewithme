@@ -1,0 +1,26 @@
+$primary: #7460ee;
+mat-dialog-content {
+    height: 350px;
+    width: 450px;
+
+    ::ng-deep.mat-radio-button {
+        label {
+            div.mat-radio-container {
+                display: none !important;
+            }
+        }
+    }
+    .selected{
+        color: blue;
+    }
+    &::-webkit-scrollbar {
+        width: 5px;
+
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: $primary;
+        border-radius: 10px;
+    }
+
+}

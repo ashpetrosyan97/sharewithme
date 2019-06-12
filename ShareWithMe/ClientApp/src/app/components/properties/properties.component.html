@@ -1,0 +1,34 @@
+<h2 mat-dialog-title style="text-align: center">Properties</h2>
+<mat-dialog-content>
+    <mat-card *ngIf="fileInfo">
+        <div fxLayout>
+            <mat-icon color="accent">album</mat-icon>
+            <span>{{fileInfo.name}}</span>
+        </div>
+        <div fxLayout>
+            <span>Size</span>
+            <p>{{fileInfo.size|number}} Mb</p>
+        </div>
+        <div fxLayout>
+            <span>Created on</span>
+            <p>{{fileInfo.creationTime|date}}</p>
+        </div>
+        <div fxLayout>
+            <span>Shared</span>
+            <p>{{fileInfo.usersSharedFiles.length > 0 ? 'Yes' : 'No'}}</p>
+        </div>
+        <div fxLayout>
+            <span>Duration</span>
+            <p>{{fileInfo.duration|duration}}</p>
+        </div>
+        <div *ngIf="fileInfo.lastModificationTime" fxLayout>
+            <span>Last modified on</span>
+            <p>{{fileInfo.lastModificationTime|date}}</p>
+        </div>
+
+    </mat-card>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button mat-button color="primary" [mat-dialog-close]>Ok</button>
+</mat-dialog-actions>
+

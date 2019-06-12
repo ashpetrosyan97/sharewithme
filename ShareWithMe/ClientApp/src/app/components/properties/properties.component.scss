@@ -1,0 +1,30 @@
+@import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
+
+mat-card {
+  width: 400px;
+  margin: 0;
+
+  div {
+    padding: 5px 0;
+    margin: 5px 0;
+  }
+
+  mat-icon {
+    font-size: 40px;
+    height: 40px;
+    width: 40px;
+  }
+
+  span {
+    margin: auto 0;
+    padding: 0 15px;
+  }
+
+  p {
+    margin-left: auto;
+  }
+}
+
+button {
+  margin-left: auto;
+}

@@ -1,0 +1,72 @@
+<div class="container" [class.example-is-mobile]="mobileQuery.matches">
+    <mat-toolbar color="primary" class="example-toolbar">
+        <button mat-icon-button (click)="showHide(snav)" value="sidebarclosed">
+            <mat-icon>menu</mat-icon>
+        </button>
+        <span fxFlex></span>
+    </mat-toolbar>
+
+    <mat-sidenav-container class="example-sidenav-container">
+
+        <mat-sidenav #snav id="snav" class="dark-sidebar pl-xs" [mode]="mobileQuery.matches ? 'side' : 'over'"
+                     fixedTopGap="0" [opened]="mobileQuery.matches" [disableClose]="mobileQuery.matches">
+            <div class="user-profile" style="background: url(assets/images/background/user-info.jpg) no-repeat;">
+                <div class="profile-img" *ngIf="imgSrc"><img [src]="imgSrc" alt="user"></div>
+                <div class="profile-text"><a [matMenuTriggerFor]="sdprofile" class=""> {{FullName}} <i
+                        class="ti-angle-down font-12 m-l-5"></i></a></div>
+                <mat-menu #sdprofile="matMenu" class="mymegamenu">
+                    <input #image type="file" accept="image/*" hidden (change)="selectImage($event)">
+                    <button mat-menu-item (click)="image.click()">
+                        <mat-icon>camera_alt</mat-icon>
+                        Update Profile Image
+                    </button>
+                    <button mat-menu-item *ngIf="user&&user.account.type===1">
+                        <mat-icon>account_box</mat-icon>
+                        Upgrade account
+                    </button>
+                    <button mat-menu-item (click)="logOut()">
+                        <mat-icon>exit_to_app</mat-icon>
+                        Sign Out
+                    </button>
+                </mat-menu>
+            </div>
+            <mat-nav-list>
+                <mat-list-item *ngFor="let menuitem of menuItems" routerLinkActive="selected">
+                    <a class="" [routerLink]="['',menuitem.route]" *ngIf="menuitem.type === 'link'">
+                        <mat-icon>{{ menuitem.icon }}</mat-icon>
+                        <span>{{ menuitem.name }}</span>
+                        <span fxFlex></span>
+                    </a>
+                </mat-list-item>
+            </mat-nav-list>
+            <mat-divider></mat-divider>
+            <mat-list-item>
+                <div class="storage-info">
+                    <mat-icon class="icon">storage</mat-icon>
+                    <div>
+                        <p>Storage</p>
+                        <mat-progress-bar
+                                class="example-margin"
+                                mode="determinate"
+                                [value]="(dataStore.getStorageInfo | async)?.percent | number"
+                        >
+                        </mat-progress-bar>
+                        <p>{{(dataStore.getStorageInfo | async)?.size| number :'1.1-2'}} Gb
+                            of {{user && user.account.storageSize / 1024}}Gb
+                            used</p>
+                    </div>
+                </div>
+                <app-used-space
+                        [usedSpacePercent]="(dataStore.getStorageInfo | async)?.percent | number :'1.1-1'"></app-used-space>
+            </mat-list-item>
+        </mat-sidenav>
+
+        <mat-sidenav-content>
+            <div class="page-content">
+                <router-outlet>
+                </router-outlet>
+            </div>
+            <app-file-uploader class="uploaderDialog"></app-file-uploader>
+        </mat-sidenav-content>
+    </mat-sidenav-container>
+</div>

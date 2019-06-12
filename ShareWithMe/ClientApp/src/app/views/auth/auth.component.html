@@ -1,0 +1,127 @@
+<div class="container">
+    <mat-toolbar [color]="color">
+        <span>Share With Me</span>
+    </mat-toolbar>
+
+    <mat-card>
+        <mat-card-title>
+            {{hasAccount ? " Sign In" : "Register New Account"}}
+        </mat-card-title>
+
+        <mat-card-content>
+            <form *ngIf="hasAccount" [formGroup]="signInForm" (submit)="LogIn()">
+                <table>
+                    <tr>
+                        <td colspan="2">
+                            <mat-form-field class="full-width">
+                                <input matInput placeholder="Username" formControlName="username">
+                            </mat-form-field>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <mat-form-field class="full-width">
+                                <input matInput placeholder="Password" type="password" formControlName="password">
+                            </mat-form-field>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: left;font-size:12px;padding-top:10px">
+                            <a mat-ripple role="link" routerLink="/forgotPass">Forgot password ?</a>
+                        </td>
+                        <td style="text-align: right;padding-top:10px">
+                            <button [disabled]="!signInForm.valid" mat-raised-button [color]="color">Sign In</button>
+                        </td>
+                    </tr>
+                </table>
+            </form>
+
+            <form *ngIf="!hasAccount" [formGroup]="signUpForm" (submit)="Register()">
+                <table>
+                    <tr>
+                        <td>
+                            <mat-form-field class="full-width">
+                                <input matInput placeholder="First Name" formControlName="name">
+                            </mat-form-field>
+                        </td>
+                        <td>
+                            <mat-form-field class="full-width">
+                                <input matInput placeholder="Last Name" formControlName=surname>
+                            </mat-form-field>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <mat-form-field class="full-width">
+                                <input matInput placeholder="Username" formControlName="username">
+                            </mat-form-field>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <mat-form-field class="full-width">
+                                <input matInput placeholder="Email" type="email" formControlName="email">
+                            </mat-form-field>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <mat-form-field class="full-width">
+                                <input matInput placeholder="Phone Number" type="tel" formControlName="phoneNumber">
+                            </mat-form-field>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <mat-form-field class="full-width">
+                                <input matInput placeholder="Country" type="text" formControlName="country">
+                            </mat-form-field>
+                        </td>
+                    </tr>
+                    <tr>
+                    <tr>
+                        <td>
+                            <mat-form-field class="full-width">
+                                <input matInput placeholder="Password" type="password" formControlName="password"
+                                       (input)="onPasswordInput()">
+                                <mat-error *ngIf="hasError('password','required')">Password Required</mat-error>
+                                <mat-error *ngIf="hasError('password','minlength')">Password must be at least 6
+                                    symbols
+                                </mat-error>
+                            </mat-form-field>
+                        </td>
+                        <td>
+                            <mat-form-field class="full-width">
+                                <input matInput placeholder="Confirm" type="password" formControlName="confirm">
+                                <mat-error *ngIf="hasError('confirm','not_match')">Password mismatch</mat-error>
+                            </mat-form-field>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" class="content-center">
+                            <mat-label>Account Subscription</mat-label>
+                        </td>
+                    </tr>
+                    <tr class="content-center">
+                        <td>
+                            <mat-radio-button color="warn" (change)="signUpForm.controls.accountId.patchValue(1)"
+                                              checked> Free
+                            </mat-radio-button>
+                        </td>
+                        <td>
+                            <mat-radio-button color="warn" (change)="signUpForm.controls.accountId.patchValue(2)">Pro
+                            </mat-radio-button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="text-align: right;padding-top:10px">
+                            <button mat-raised-button [disabled]="!signUpForm.valid" [color]="color">Register</button>
+                        </td>
+                    </tr>
+                </table>
+            </form>
+            <a role="button" mat-button [color]="color"
+               (click)="Switch()">{{hasAccount ? "Create an account" : "Already has account?"}}  </a>
+        </mat-card-content>
+    </mat-card>
+</div>

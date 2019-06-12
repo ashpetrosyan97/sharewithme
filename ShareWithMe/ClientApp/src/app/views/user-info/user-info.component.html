@@ -1,0 +1,18 @@
+<mat-card>
+    <mat-toolbar>
+        <h1>Information</h1>
+    </mat-toolbar>
+    <mat-card-content>
+        <mat-list>
+            <mat-list-item *ngFor="let key of keys">
+                <div class="listItemContainer">
+                    <p style="text-transform: capitalize">{{key}}: </p>
+                    <div>{{userInfoModel[key]}}</div>
+                </div>
+            </mat-list-item>
+        </mat-list>
+        <div style="width: 100%;text-align: right">
+            <button mat-raised-button color="warn" (click)="Edit()">Edit</button>
+        </div>
+    </mat-card-content>
+</mat-card>

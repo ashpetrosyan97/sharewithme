@@ -1,0 +1,65 @@
+import {Inject, Injectable} from '@angular/core';
+import * as signalR from '@aspnet/signalr';
+import {URLs} from '@app/constants/URLS';
+import {DataStoreService} from '@app/service/data-store.service';
+import {BehaviorSubject, Observable} from 'rxjs';
+import 'rxjs/add/observable/fromPromise';
+
+@Injectable({
+    providedIn: 'root'
+})
+export class SignalRService {
+    private hubConnection: signalR.HubConnection;
+    base_url: string = '';
+
+    constructor(private dataStorage: DataStoreService, @Inject('BASE_URL') baseUrl: string) {
+        this.base_url = baseUrl;
+    }
+
+    public isConnected: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+
+    public connect(): Observable<any> {
+        this.hubConnection = new signalR.HubConnectionBuilder()
+            .withUrl(`${this.base_url}progressHub`, {
+                transport: signalR.HttpTransportType.LongPolling,
+                accessTokenFactory(): string | Promise<string> {
+                    return localStorage.getItem('token');
+                }
+            })
+            .build();
+        if (!this.isConnected.getValue()) {
+            return Observable.fromPromise(
+                this.hubConnection
+                    .start()
+                    .then(() => {
+                        console.log('Connection started');
+                        this.storageInfoListener();
+                        this.uploadListener();
+                        this.isConnected.next(true);
+                    })
+                    .catch(err => console.log('Error while starting connection: ' + err)));
+        } else {
+            return Observable.fromPromise(new Promise(resolve => resolve(true)));
+        }
+
+    };
+
+
+    public uploadListener() {
+        this.hubConnection.on('SendUploadPercent', (uid, percent) => {
+            let current = this.dataStorage.syncingFiles.find(x => x.uid === uid);
+            if (percent === 100) {
+                this.dataStorage.syncingFiles.splice(this.dataStorage.syncingFiles.indexOf(current), 1);
+            } else {
+                current.uploaded = percent;
+            }
+        });
+    }
+
+    public storageInfoListener() {
+        this.hubConnection.on('SendStorageInfo', (size, percent) => {
+            this.dataStorage.setStorageInfo({size, percent});
+        });
+    }
+
+}

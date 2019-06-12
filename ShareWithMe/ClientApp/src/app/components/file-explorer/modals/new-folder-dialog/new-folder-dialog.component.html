@@ -1,0 +1,15 @@
+<h1 mat-dialog-title>Create a new folder</h1>
+
+<mat-dialog-content>
+    <mat-form-field class="full-width">
+        <input matInput placeholder="Folder Name" (keydown)="handleKeydown($event)" (input)="handleInput($event)">
+        <mat-hint *ngIf="!valid">Don't use [?, :, *, ", /, \, <, >, |]</mat-hint>
+    </mat-form-field>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+    <button mat-raised-button mat-dialog-close>Cancel</button>
+    <button mat-raised-button [disabled]="!valid||folderName===''" [mat-dialog-close]="folderName" color="primary">
+        OK
+    </button>
+</mat-dialog-actions>

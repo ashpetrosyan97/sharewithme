@@ -1,0 +1,31 @@
+<mat-accordion style="height: 200px;width: 300px" *ngIf="dataStore.syncingFiles.length > 0">
+    <mat-expansion-panel (opened)="panelOpenState = true" expanded="true"
+                         (closed)="panelOpenState = false">
+        <mat-expansion-panel-header>
+            <mat-panel-title>
+                Preparing
+            </mat-panel-title>
+        </mat-expansion-panel-header>
+        <mat-list>
+            <mat-list-item *ngFor="let item of dataStore.syncingFiles">
+                <mat-icon class="icon">cloud_{{item.action}}</mat-icon>
+                <div>
+                    <p title="{{item.name}}">{{item.name}}</p>
+                    <mat-progress-bar
+                            class="example-margin"
+                            [mode]="item.loaded !==100 ? 'indeterminate' : 'determinate'"
+                            [value]="item.uploaded"
+                    >
+                    </mat-progress-bar>
+                    <p>{{item.loaded === 100 && item.uploaded ? " Uploaded " + item.uploaded :
+                        "Reading " + item.loaded}} %</p>
+                </div>
+                <button mat-icon-button title="Cancel" *ngIf="item.loaded !==100" (click)="cancelUpload(item)">
+                    <mat-icon>close</mat-icon>
+                </button>
+            </mat-list-item>
+        </mat-list>
+    </mat-expansion-panel>
+</mat-accordion>
+
+

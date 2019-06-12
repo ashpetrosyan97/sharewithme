@@ -1,0 +1,19 @@
+mat-dialog-content {
+  height: 350px;
+  width: 450px;
+}
+mat-dialog-content ::ng-deep.mat-radio-button label div.mat-radio-container {
+  display: none !important;
+}
+mat-dialog-content .selected {
+  color: blue;
+}
+mat-dialog-content::-webkit-scrollbar {
+  width: 5px;
+}
+mat-dialog-content::-webkit-scrollbar-thumb {
+  background-color: #7460ee;
+  border-radius: 10px;
+}
+
+/*# sourceMappingURL=move-to-dialog.component.css.map */

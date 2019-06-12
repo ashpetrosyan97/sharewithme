@@ -1,0 +1,19 @@
+.autocomplete {
+  height: 200px;
+}
+.autocomplete::-webkit-scrollbar {
+  width: 5px;
+}
+.autocomplete::-webkit-scrollbar-thumb {
+  background-color: #7460ee;
+  border-radius: 10px;
+}
+
+mat-dialog-content {
+  width: 300px;
+}
+mat-dialog-content mat-dialog-container {
+  height: 400px;
+}
+
+/*# sourceMappingURL=share-file.component.css.map */

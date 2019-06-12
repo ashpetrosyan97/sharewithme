@@ -1,0 +1,36 @@
+<h2 mat-dialog-title style="text-align: center">Share with</h2>
+<mat-dialog-content style="text-align: center;padding: 10px">
+    <mat-form-field style="width: 100%">
+        <mat-chip-list #chipList>
+            <mat-chip [title]="user.email"
+                      *ngFor="let user of users"
+                      [selectable]="selectable"
+                      [removable]="removable"
+                      (removed)="remove(user)">
+                {{user.name}} {{user.surname}}
+                <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+            </mat-chip>
+            <input matInput
+                   placeholder="New user..."
+                   #userInput
+                   [formControl]="userCtrl"
+                   [matAutocomplete]="auto"
+                   [matChipInputFor]="chipList"
+                   [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                   [matChipInputAddOnBlur]="addOnBlur">
+        </mat-chip-list>
+        <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+            <cdk-virtual-scroll-viewport itemSize="30" minBufferPx="100" maxBufferPx="250"
+                                         [class]="(filteredUsers | async)&&(filteredUsers | async).length !==0 ? 'autocomplete':''">
+                <mat-option *ngFor="let user of filteredUsers | async" [value]="user">{{user.name}} {{user.surname}}
+                </mat-option>
+            </cdk-virtual-scroll-viewport>
+        </mat-autocomplete>
+    </mat-form-field>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button style="margin: auto" mat-button mat-ripple color="primary" [mat-dialog-close]>Cancel
+    </button>
+    <button style="margin: auto" mat-button mat-ripple color="warn" [mat-dialog-close]="users">Ok
+    </button>
+</mat-dialog-actions>

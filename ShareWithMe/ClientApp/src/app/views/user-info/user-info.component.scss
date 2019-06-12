@@ -1,0 +1,41 @@
+$primary: #7460ee;
+mat-card {
+  max-width: 480px !important;
+  margin: 100px auto !important;
+  box-shadow: 1px 0 10px rgba(0, 0, 0, 0.5) !important;
+  border-radius: 5px !important;
+
+  mat-toolbar {
+    width: 80%;
+    position: absolute;
+    top: -40px;
+    left: 10%;
+    background-color: $primary;
+    border-radius: 10px;
+
+    h1 {
+      margin: auto;
+    }
+  }
+  mat-card-content{
+    a{
+      padding: 20px;
+      margin-left: auto;
+      color: blue;
+    }
+  }
+
+  .listItemContainer {
+    display: inline-flex;
+    width: 100%;
+
+    p, div {
+      margin: 15px 0;
+    }
+
+    div {
+      margin-left: auto;
+      color: coral;
+    }
+  }
+}

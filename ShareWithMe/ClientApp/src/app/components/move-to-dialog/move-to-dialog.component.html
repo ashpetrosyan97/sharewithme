@@ -1,0 +1,23 @@
+<h2 mat-dialog-title style="text-align: center">{{title}}</h2>
+<mat-dialog-content style="text-align: center;padding: 10px">
+    <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
+        <mat-tree-node *matTreeNodeDef="let node;when: hasChild" matTreeNodePadding>
+            <button mat-icon-button matTreeNodeToggle [disabled]="!node.expandable"
+                    [attr.aria-label]="'toggle ' + node.name">
+                <mat-icon class="mat-icon-rtl-mirror" *ngIf="node.expandable">
+                    {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+                </mat-icon>
+            </button>
+            <mat-icon class="type-icon" [attr.aria-label]="node.type + 'icon'"> folder</mat-icon>
+            <mat-radio-button [value]="node.id" (mouseup)="handleRadioChange(node)">
+                <span [className]="selectedDir&&selectedDir.id===node.id?'selected':''">{{node.name}}</span>
+            </mat-radio-button>
+        </mat-tree-node>
+    </mat-tree>
+</mat-dialog-content>
+<mat-dialog-actions style="text-align: center">
+    <button mat-button mat-ripple style="margin: auto" color="primary" [mat-dialog-close]>Cancel</button>
+    <button mat-button mat-ripple style="margin: auto" color="warn" [disabled]="!selectedDir"
+            [mat-dialog-close]="selectedDir">{{action}}
+    </button>
+</mat-dialog-actions>

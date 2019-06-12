@@ -1,0 +1,48 @@
+mat-expansion-panel {
+  box-shadow: 1px 0 10px rgba(0, 0, 0, 0.5) !important;
+  border-radius: 5px !important;
+  background-color: #323232;
+}
+mat-expansion-panel mat-panel-title {
+  color: #fff;
+}
+mat-expansion-panel div.mat-expansion-panel-content {
+  background: #fff !important;
+}
+mat-expansion-panel mat-list {
+  width: 300px !important;
+  overflow-y: scroll;
+  max-height: 200px !important;
+  overflow-x: hidden;
+  margin: 0 5px;
+}
+mat-expansion-panel mat-list::-webkit-scrollbar {
+  width: 5px;
+}
+mat-expansion-panel mat-list::-webkit-scrollbar-thumb {
+  background-color: #7460ee;
+  border-radius: 10px;
+}
+mat-expansion-panel mat-list mat-list-item {
+  margin: 10px 0;
+  display: flex;
+  align-items: center;
+}
+mat-expansion-panel mat-list mat-list-item div {
+  width: 190px;
+}
+mat-expansion-panel mat-list mat-list-item div p {
+  margin: 0;
+  padding: 0 10px;
+  text-align: center;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+mat-expansion-panel mat-list mat-list-item mat-icon.icon {
+  font-size: 50px;
+  height: 50px;
+  width: 50px;
+}
+
+/*# sourceMappingURL=file-uploader.component.css.map */

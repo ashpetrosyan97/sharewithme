@@ -1,0 +1,21 @@
+.autocomplete {
+  height: 200px;
+
+  &::-webkit-scrollbar {
+    width: 5px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #7460ee;
+    border-radius: 10px;
+  }
+}
+
+mat-dialog-content {
+  width: 300px;
+
+  mat-dialog-container {
+    height: 400px;
+  }
+
+}

@@ -1,0 +1,46 @@
+.container {
+  height: 100vh;
+  width: 100%;
+  background-size: cover;
+  background: url(assets/images/auth/login.jpg) top center;
+
+  .mat-card {
+    text-align: -webkit-center;
+  }
+
+  .full-width {
+    width: 100%;
+  }
+
+  body {
+    margin: 0;
+    font-family: Roboto, sans-serif;
+  }
+
+  mat-card {
+    width: fit-content;
+    max-width: 640px;
+    min-width: 250px;
+    height: fit-content;
+    position: absolute;
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    margin: auto;
+    padding: 1rem !important;
+    text-align: center;
+  }
+
+  mat-toolbar-row {
+    justify-content: space-between;
+  }
+
+  mat-card-title {
+    padding-top: 20px !important;
+  }
+
+  .content-center {
+    text-align: -webkit-center;
+  }
+}

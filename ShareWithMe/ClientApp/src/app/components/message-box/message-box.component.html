@@ -1,0 +1,8 @@
+<h2 mat-dialog-title style="text-align: center">{{modalTitle}}</h2>
+<mat-dialog-content style="text-align: center;padding: 10px">
+  <p *ngFor="let item of content">{{item}}</p>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button style="margin: auto" mat-raised-button mat-ripple color="warn" [mat-dialog-close]>Ok</button>
+</mat-dialog-actions>
+
