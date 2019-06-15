@@ -14,6 +14,7 @@ import {NewFolderDialogComponent} from './modals/new-folder-dialog/new-folder-di
 import {RenameDialogComponent} from './modals/rename-dialog/rename-dialog.component';
 import {FileExplorerComponent} from './file-explorer.component';
 import {MatProgressSpinnerModule} from '@angular/material';
+import {LongPressDirective} from '@app/long-press.directive';
 
 @NgModule({
     imports: [
@@ -30,7 +31,7 @@ import {MatProgressSpinnerModule} from '@angular/material';
         MatButtonModule,
         MatProgressSpinnerModule,
     ],
-    declarations: [FileExplorerComponent, NewFolderDialogComponent, RenameDialogComponent],
+    declarations: [FileExplorerComponent, NewFolderDialogComponent, RenameDialogComponent,LongPressDirective],
     exports: [FileExplorerComponent],
     entryComponents: [NewFolderDialogComponent, RenameDialogComponent]
 })

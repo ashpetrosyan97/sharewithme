@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
-using NReco.VideoInfo;
 using SWM.Application.Files;
 using SWM.Application.Users;
 using SWM.Core;
@@ -31,7 +30,7 @@ namespace ShareWithMe.Controllers
         private readonly IUserManager _userManager;
         private readonly IHostingEnvironment _env;
         private readonly IHubContext<ProgressHub, IProgressHub> _hub;
-        ILogger<FilesController> _log;
+        readonly ILogger<FilesController> _log;
         private readonly string StorageDirectory;
         public FilesController(IFileManager fileManager, IUserManager userManager, IHostingEnvironment env, ISharedFileManager sharedFileManager, IHubContext<ProgressHub, IProgressHub> hub, ILogger<FilesController> log)
         {

@@ -100,8 +100,6 @@ namespace ShareWithMe.Common
         /// Generates a Random Password
         /// respecting the given strength requirements.
         /// </summary>
-        /// <param name="opts">A valid PasswordOptions object
-        /// containing the password strength requirements.</param>
         /// <returns>A random password</returns>
         public static string Generate()
         {

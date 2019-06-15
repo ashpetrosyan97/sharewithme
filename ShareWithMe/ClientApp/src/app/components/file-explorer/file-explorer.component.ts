@@ -106,7 +106,7 @@ export class FileExplorerComponent implements OnInit {
     }
 
     openMenu(event: MouseEvent, element: FileElement, viewChild: MatMenuTrigger) {
-        event.preventDefault();
+        event && event.preventDefault();
         viewChild.openMenu();
     }
 

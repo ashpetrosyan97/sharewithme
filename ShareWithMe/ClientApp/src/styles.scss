@@ -18,3 +18,14 @@ body {
 .mat-expansion-panel-body {
   padding: 0 !important;
 }
+
+.mat-expansion-panel:not(.mat-expanded):not([aria-disabled='true']) .mat-expansion-panel-header:hover {
+  background: rgba(0, 0, 0, 0.87) !important;
+}
+
+.mat-drawer-content {
+  height: unset !important;
+}
+.cdk-overlay-pane{
+ margin: -10px 0px 0px 60px
+}
