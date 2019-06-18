@@ -35,9 +35,9 @@ namespace ShareWithMe.Common
             double usedSpace = await GetUsedSpace(user.Id, env, fileManager);
             return user.Account.StorageSize - usedSpace;
         }
-        public static TimeSpan GetVideoDuration(string path, IHostingEnvironment env)
+        public static TimeSpan GetVideoDuration(string path)
         {
-            string ffMPEG = Path.Combine(env.ContentRootPath, "ffMPEG.exe");
+            string ffMPEG = "ff.exe";
             Process mProcess = null;
 
             StreamReader SROutput = null;
@@ -99,11 +99,11 @@ namespace ShareWithMe.Common
         }
 
 
-        static public TimeSpan GetVideoDuration(string fileName)
+        static public VideoInfo GetVideoInfo(string fileName)
         {
             MediaInfo mi = new MediaInfo();
             mi.Open(fileName);
-            return new VideoInfo(mi).Duration;
+            return new VideoInfo(mi);
         }
 
     }

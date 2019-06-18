@@ -44,6 +44,12 @@
   <ItemGroup>
     <ProjectReference Include="..\SWM.Application\SWM.Application.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <None Update="ff.exe">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
   
   <PropertyGroup>
   <GenerateDocumentationFile>true</GenerateDocumentationFile>

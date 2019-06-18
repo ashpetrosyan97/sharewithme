@@ -26,6 +26,8 @@ body {
 .mat-drawer-content {
   height: unset !important;
 }
-.cdk-overlay-pane{
- margin: -10px 0px 0px 60px
+.cdk-overlay-connected-position-bounding-box{
+  margin-left: 60px;
+  margin-top: -10px;
+  margin-right: -60px;
 }

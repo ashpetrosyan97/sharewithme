@@ -201,7 +201,7 @@ namespace ShareWithMe.Controllers
             }
             var file = CustomMapper<FileEntity, FileDto>.Map(entity);
             file.Size = new FileInfo(Path.Combine(_env.WebRootPath, file.Path)).Length / Math.Pow(1024, 2);
-            //file.Duration = Dir.GetVideoDuration(Path.Combine(_env.WebRootPath, file.Path));
+            file.Duration = Dir.GetVideoDuration(Path.Combine(_env.WebRootPath, file.Path));
             return new JsonResult(new ResponseModel(data: file));
         }
 
