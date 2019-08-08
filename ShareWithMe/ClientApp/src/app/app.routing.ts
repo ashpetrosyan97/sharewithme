@@ -7,12 +7,14 @@ import {AuthComponent} from "./views/auth/auth.component";
 import {DeletedFilesComponent} from "@app/views/deleted-files/deleted-files.component";
 import {ResetPasswordComponent} from "@app/views/reset-password/reset-password.component";
 import {SharedFilesComponent} from "@app/views/shared-files/shared-files.component";
+import {LoginGuardService} from "@app/service/login-guard.service";
 
 
 export const RoutesForNav: Routes = [
     {
         path: '',
         component: DashboardComponent,
+        canActivate: [AuthGuardService],
         children: [
             {
                 path: 'files',
@@ -34,8 +36,7 @@ export const RoutesForNav: Routes = [
     }
 ];
 export const RoutesForRoot: Routes = [
-    {path: 'auth', component: AuthComponent},
-    {path: 'forgotPass', component: ResetPasswordComponent},
-    {path: '', component: DashboardComponent, canActivate: [AuthGuardService]},
+    {path: 'auth', component: AuthComponent, canActivate: [LoginGuardService]},
+    {path: 'forgotPass', component: ResetPasswordComponent, canActivate: [LoginGuardService]},
     {path: '', redirectTo: '/files', pathMatch: 'full', canActivate: [AuthGuardService]},
 ];

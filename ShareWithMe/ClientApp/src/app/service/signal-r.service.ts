@@ -2,7 +2,7 @@ import {Inject, Injectable} from '@angular/core';
 import * as signalR from '@aspnet/signalr';
 import {URLs} from '@app/constants/URLS';
 import {DataStoreService} from '@app/service/data-store.service';
-import {BehaviorSubject, Observable} from 'rxjs';
+import {BehaviorSubject, from, Observable} from 'rxjs';
 import 'rxjs/add/observable/fromPromise';
 
 @Injectable({
@@ -10,23 +10,22 @@ import 'rxjs/add/observable/fromPromise';
 })
 export class SignalRService {
     private hubConnection: signalR.HubConnection;
-    base_url: string = '';
 
-    constructor(private dataStorage: DataStoreService, @Inject('BASE_URL') baseUrl: string) {
-        this.base_url = baseUrl;
+    constructor(private dataStorage: DataStoreService, @Inject('BASE_URL') public baseUrl: string) {
     }
 
     public isConnected: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
     public connect(): Observable<any> {
         this.hubConnection = new signalR.HubConnectionBuilder()
-            .withUrl(`${this.base_url}progressHub`, {
+            .withUrl(`${this.baseUrl}progressHub`, {
                 transport: signalR.HttpTransportType.LongPolling,
                 accessTokenFactory(): string | Promise<string> {
                     return localStorage.getItem('token');
                 }
             })
             .build();
+        
         if (!this.isConnected.getValue()) {
             return Observable.fromPromise(
                 this.hubConnection
@@ -44,6 +43,9 @@ export class SignalRService {
 
     };
 
+    public disconnect(): Observable<any> {
+        return Observable.fromPromise(this.hubConnection.stop());
+    }
 
     public uploadListener() {
         this.hubConnection.on('SendUploadPercent', (uid, percent) => {

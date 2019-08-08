@@ -9,7 +9,7 @@ import {DataStoreService} from '@app/service/data-store.service';
     templateUrl: './dashboard.component.html',
     styleUrls: ['./dashboard.component.scss']
 })
-export class DashboardComponent implements OnDestroy {
+export class DashboardComponent {
 
     mobileQuery: MediaQueryList;
 
@@ -41,10 +41,6 @@ export class DashboardComponent implements OnDestroy {
         signalR.connect();
     }
 
-    ngOnDestroy(): void {
-        this.updateUserData();
-        this.mobileQuery.removeListener(this._mobileQueryListener);
-    }
 
     showHide(snav) {
         snav.toggle();

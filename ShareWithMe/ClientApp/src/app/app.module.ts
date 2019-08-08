@@ -35,6 +35,7 @@ import {MAT_CHIPS_DEFAULT_OPTIONS} from "@angular/material";
 import {COMMA, ENTER} from "@angular/cdk/keycodes";
 import {PropertiesComponent} from './components/properties/properties.component';
 import {DurationPipe} from './duration.pipe';
+import {LoginGuardService} from "@app/service/login-guard.service";
 
 @NgModule({
   declarations: [
@@ -75,7 +76,7 @@ import {DurationPipe} from './duration.pipe';
     RouterModule.forRoot(RoutesForRoot),
     RouterModule.forChild(RoutesForNav)
   ],
-  providers: [FileService, AuthGuardService, DataStoreService, LoadingService, {
+  providers: [FileService, AuthGuardService,LoginGuardService, DataStoreService, LoadingService, {
     provide: HTTP_INTERCEPTORS,
     useClass: LoadingInterceptor,
     multi: true

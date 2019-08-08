@@ -10,40 +10,43 @@ import {updateUserModel} from "../models/updateUserModel";
 import {Observable} from "rxjs";
 import {ResponseModel} from "@app/models/responseModel";
 import {map} from "rxjs/operators/map";
+import {SignalRService} from "@app/service/signal-r.service";
 
 
 @Injectable({
     providedIn: 'root'
 })
 export class AuthService {
-    base_url:string = "";
-    constructor(private http: HttpClient, public jwtHelper: JwtHelperService, private router: Router,@Inject('BASE_URL') baseUrl: string) {
-        this.base_url = baseUrl;
+
+    constructor(private http: HttpClient, public jwtHelper: JwtHelperService, private router: Router, public signalR: SignalRService, @Inject('BASE_URL') public baseUrl: string) {
     }
 
 
     register(model: CreateUserModel): Observable<ResponseModel> {
-        return this.http.post(this.base_url + URLs.user.register, Mapper.MapToFormData(model))
+        return this.http.post(this.baseUrl + URLs.user.register, Mapper.MapToFormData(model))
             .pipe(map((data: ResponseModel) => data))
     }
 
     login(model: AuthenticationModel): Observable<ResponseModel> {
-        return this.http.post(this.base_url + URLs.user.auth, Mapper.MapToFormData(model))
+        return this.http.post(this.baseUrl + URLs.user.auth, Mapper.MapToFormData(model))
             .pipe(map((data: ResponseModel) => data))
     }
 
     logout() {
-        localStorage.clear();
-        this.router.navigate(['', 'auth']);
+        this.signalR.disconnect()
+            .subscribe(_ => {
+                localStorage.clear();
+                this.router.navigate(['auth']);
+            })
     }
 
     resetPassword(model) {
-        return this.http.post(this.base_url + URLs.user.resetPassword, Mapper.MapToFormData(model))
+        return this.http.post(this.baseUrl + URLs.user.resetPassword, Mapper.MapToFormData(model))
             .pipe(map((data: ResponseModel) => data))
     }
 
     get(username): Observable<ResponseModel> {
-        return this.http.get(`${this.base_url}${URLs.user.get}${username}`, {
+        return this.http.get(`${this.baseUrl}${URLs.user.get}${username}`, {
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`
             }
@@ -52,7 +55,7 @@ export class AuthService {
     }
 
     getAll() {
-        return this.http.get(`${this.base_url}${URLs.user.getAll}`, {
+        return this.http.get(`${this.baseUrl}${URLs.user.getAll}`, {
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`
             }
@@ -60,7 +63,7 @@ export class AuthService {
     }
 
     Edit(model: updateUserModel): Observable<ResponseModel> {
-        return this.http.put(this.base_url + URLs.user.update, Mapper.MapToFormData(model), {
+        return this.http.put(this.baseUrl + URLs.user.update, Mapper.MapToFormData(model), {
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`
             }
@@ -68,7 +71,7 @@ export class AuthService {
     }
 
     updateProfileImage(model): Observable<ResponseModel> {
-        return this.http.put(this.base_url + URLs.user.updateProfileImage, Mapper.MapToFormData(model), {
+        return this.http.put(this.baseUrl + URLs.user.updateProfileImage, Mapper.MapToFormData(model), {
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`
             }
@@ -76,7 +79,7 @@ export class AuthService {
     }
 
     getUserInfo() {
-        return this.http.get(this.base_url + URLs.user.currentUserDetails, {
+        return this.http.get(this.baseUrl + URLs.user.currentUserDetails, {
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',

@@ -105,7 +105,7 @@ namespace ShareWithMe
 
             services.Configure<ApiBehaviorOptions>(options => options.SuppressModelStateInvalidFilter = true);
 
-           /* services.AddTransient<SmtpClient>((serviceProvider) =>
+            services.AddTransient<SmtpClient>((serviceProvider) =>
             {
                 var config = serviceProvider.GetRequiredService<IConfiguration>();
                 ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
@@ -113,12 +113,9 @@ namespace ShareWithMe
                 var client = new SmtpClient();
                 client.ServerCertificateValidationCallback = delegate { return true; };
                 client.Connect(Configuration["Email:Smtp:Host"], int.Parse(Configuration["Email:Smtp:Port"]), false);
-                client.Authenticate(
-                   Configuration["Email:Smtp:Username"],
-                    Configuration["Email:Smtp:Password"]
-                    );
+                client.Authenticate(Configuration["Email:Smtp:Username"], Configuration["Email:Smtp:Password"]);
                 return client;
-            });*/
+            });
 
             services.AddSwaggerGen(c =>
             {

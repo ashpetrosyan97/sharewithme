@@ -28,14 +28,12 @@ export interface IFileService {
 @Injectable()
 export class FileService implements IFileService {
     private map = new Map<string, FileElement>();
-    base_url: string = '';
 
-    constructor(private http: HttpClient, private dataStore: DataStoreService, private signalR: SignalRService, @Inject('BASE_URL') baseUrl: string) {
-        this.base_url = baseUrl;
+    constructor(private http: HttpClient, private dataStore: DataStoreService, private signalR: SignalRService, @Inject('BASE_URL') public baseUrl: string) {
     }
 
     getAll(): Observable<ResponseModel> {
-        return this.http.get(`${this.base_url}${URLs.files.getAll}`, {
+        return this.http.get(`${this.baseUrl}${URLs.files.getAll}`, {
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',
@@ -47,7 +45,7 @@ export class FileService implements IFileService {
 
     getDeletedFiles() {
         this.signalR.connect();
-        return this.http.get(`${this.base_url}${URLs.files.getDeletedFiles}`, {
+        return this.http.get(`${this.baseUrl}${URLs.files.getDeletedFiles}`, {
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',
@@ -61,7 +59,7 @@ export class FileService implements IFileService {
     }
 
     getSharedFiles() {
-        return this.http.get(`${this.base_url}${URLs.files.getSharedFiles}`, {
+        return this.http.get(`${this.baseUrl}${URLs.files.getSharedFiles}`, {
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',
@@ -75,7 +73,7 @@ export class FileService implements IFileService {
         if (model.parentId === 'root') {
             model.parentId = '0';
         }
-        return this.http.post(this.base_url + URLs.files.create, Mapper.MapToFormData(model), {
+        return this.http.post(this.baseUrl + URLs.files.create, Mapper.MapToFormData(model), {
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`
             }
@@ -84,7 +82,7 @@ export class FileService implements IFileService {
     }
 
     delete(model: FileElement): Observable<ResponseModel> {
-        return this.http.delete(`${this.base_url}${URLs.files.delete}${model.id}`, {
+        return this.http.delete(`${this.baseUrl}${URLs.files.delete}${model.id}`, {
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`
             }
@@ -94,7 +92,7 @@ export class FileService implements IFileService {
     rename(model: FileElement): Observable<ResponseModel> {
         delete model.type;
         delete model.parentId;
-        return this.http.put(`${this.base_url}${URLs.files.rename}`, Mapper.MapToFormData(model), {
+        return this.http.put(`${this.baseUrl}${URLs.files.rename}`, Mapper.MapToFormData(model), {
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`
             }
@@ -103,7 +101,7 @@ export class FileService implements IFileService {
     }
 
     move(model): Observable<ResponseModel> {
-        return this.http.patch(`${this.base_url}${URLs.files.move}`, Mapper.MapToFormData(model), {
+        return this.http.patch(`${this.baseUrl}${URLs.files.move}`, Mapper.MapToFormData(model), {
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`
             }
@@ -111,7 +109,7 @@ export class FileService implements IFileService {
     }
 
     getFile(id): Observable<ResponseModel> {
-        return this.http.get(`${this.base_url}${URLs.files.get}${id}`, {
+        return this.http.get(`${this.baseUrl}${URLs.files.get}${id}`, {
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',
@@ -121,7 +119,7 @@ export class FileService implements IFileService {
     }
 
     restore(model): Observable<ResponseModel> {
-        return this.http.put(`${this.base_url}${URLs.files.restore}`, Mapper.MapToFormData(model), {
+        return this.http.put(`${this.baseUrl}${URLs.files.restore}`, Mapper.MapToFormData(model), {
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`
             }
@@ -134,7 +132,7 @@ export class FileService implements IFileService {
 
         let current = this.dataStore.syncingFiles.find(x => x.uid === model.uid);
 
-        return current.request = this.http.post(`${this.base_url}${URLs.files.upload}`, Mapper.MapToFormData(model), {
+        return current.request = this.http.post(`${this.baseUrl}${URLs.files.upload}`, Mapper.MapToFormData(model), {
             reportProgress: true,
             observe: 'events',
             responseType: 'json',
@@ -155,7 +153,7 @@ export class FileService implements IFileService {
 
     download(elm) {
         let current = this.dataStore.syncingFiles.find(x => x.uid === elm.uid);
-        current.request = this.http.get(`${this.base_url}${URLs.files.download}${elm.id}`, {
+        current.request = this.http.get(`${this.baseUrl}${URLs.files.download}${elm.id}`, {
             responseType: 'blob',
             reportProgress: true,
             observe: 'events',
@@ -176,7 +174,7 @@ export class FileService implements IFileService {
 
 
     share(model: ShareFileModel) {
-        return this.http.post(`${this.base_url}${URLs.files.share}`, Mapper.MapToFormData(model), {
+        return this.http.post(`${this.baseUrl}${URLs.files.share}`, Mapper.MapToFormData(model), {
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`
             }

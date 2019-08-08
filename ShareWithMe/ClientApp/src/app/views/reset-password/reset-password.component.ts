@@ -31,7 +31,6 @@ export class ResetPasswordComponent implements OnInit {
     getUser(stepper) {
         this.authService.get(this.firstFormGroup.controls.username.value)
             .subscribe(data => {
-                console.log(data)
                 if (data.success) {
                     this.user = data.data;
                     for (let i = 0; i < this.user.email.length; i++) {
@@ -46,7 +45,6 @@ export class ResetPasswordComponent implements OnInit {
     }
 
     verifyEmail(stepper) {
-        console.log(this.secondFormGroup.controls.email.value !== this.user.email)
         if (this.secondFormGroup.controls.email.value !== this.user.email) {
             this.validEmail = false
         } else {
