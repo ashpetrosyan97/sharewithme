@@ -10,35 +10,35 @@ namespace SWM.Core.Accounts
 {
     public class AccountManager : IAccountManager
     {
-        public readonly IRepository<AccountEntity, int> _accountReposytory;
+        private readonly IUnitOfWork uow;
 
-        public AccountManager(IRepository<AccountEntity, int> accountReposytory)
+        public AccountManager(IUnitOfWork uow)
         {
-            _accountReposytory = accountReposytory;
+            this.uow = uow;
         }
         public async Task CreateAsync(AccountEntity input)
         {
-            await _accountReposytory.InsertAsync(input);
+            await uow.Repository<AccountEntity>().InsertAsync(input);
         }
 
         public async Task DeleteAsync(AccountEntity input)
         {
-            await _accountReposytory.DeleteAsync(input);
+            await uow.Repository<AccountEntity>().DeleteAsync(input);
         }
 
         public async Task<List<AccountEntity>> GetAll()
         {
-            return await _accountReposytory.GetAll().ToListAsync();
+            return await uow.Repository<AccountEntity>().GetAll().ToListAsync();
         }
 
         public async Task<AccountEntity> GetAsync(long id)
         {
-            return await _accountReposytory.GetAsync(x => x.Id == id);
+            return await uow.Repository<AccountEntity>().GetAsync(x => x.Id == id);
         }
 
         public async Task UpdateAsync(AccountEntity input)
         {
-            await _accountReposytory.UpdateAsync(input);
+            await uow.Repository<AccountEntity>().UpdateAsync(input);
         }
     }
 }

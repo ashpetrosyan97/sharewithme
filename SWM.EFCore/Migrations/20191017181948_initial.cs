@@ -1,10 +1,9 @@
 ﻿using System;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace SWM.EFCore.Migrations
 {
-    public partial class Initial : Migration
+    public partial class initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -13,7 +12,7 @@ namespace SWM.EFCore.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(nullable: true),
                     Type = table.Column<int>(nullable: false),
                     Price = table.Column<decimal>(nullable: false),
@@ -29,7 +28,7 @@ namespace SWM.EFCore.Migrations
                 columns: table => new
                 {
                     Id = table.Column<long>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(nullable: false),
                     Type = table.Column<int>(nullable: false),
                     LastModificationTime = table.Column<DateTime>(nullable: true),
@@ -50,13 +49,13 @@ namespace SWM.EFCore.Migrations
                 columns: table => new
                 {
                     Id = table.Column<long>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(nullable: true),
                     Surname = table.Column<string>(nullable: true),
                     Country = table.Column<string>(nullable: true),
                     Email = table.Column<string>(nullable: false),
                     Username = table.Column<string>(nullable: false),
-                    Password = table.Column<string>(nullable: false),
+                    PasswordHash = table.Column<string>(nullable: false),
                     PhoneNumber = table.Column<string>(nullable: true),
                     AccountId = table.Column<int>(nullable: false),
                     LastLoginTime = table.Column<DateTime>(nullable: true),

@@ -28,11 +28,11 @@ namespace ShareWithMe.Controllers
         private readonly IFileManager _fileManager;
         private readonly ISharedFileManager _sharedFileManager;
         private readonly IUserManager _userManager;
-        private readonly IHostingEnvironment _env;
+        private readonly IWebHostEnvironment _env;
         private readonly IHubContext<ProgressHub, IProgressHub> _hub;
         readonly ILogger<FilesController> _log;
         private readonly string StorageDirectory;
-        public FilesController(IFileManager fileManager, IUserManager userManager, IHostingEnvironment env, ISharedFileManager sharedFileManager, IHubContext<ProgressHub, IProgressHub> hub, ILogger<FilesController> log)
+        public FilesController(IFileManager fileManager, IUserManager userManager, IWebHostEnvironment env, ISharedFileManager sharedFileManager, IHubContext<ProgressHub, IProgressHub> hub, ILogger<FilesController> log)
         {
             _log = log;
             _hub = hub;
@@ -43,11 +43,11 @@ namespace ShareWithMe.Controllers
             StorageDirectory = Path.Combine(env.WebRootPath, AppConsts.StorageDirectory);
         }
 
-        [HttpPost]
+        /*[HttpPost]
         [Authorize]
         public async Task<JsonResult> CreateDirectory([FromForm]CreateDirectoryDto input)
         {
-            var fileEntity = CustomMapper<CreateDirectoryDto, FileEntity>.Map(input);
+            var fileEntity = Mapper<CreateDirectoryDto, FileEntity>.Map(input);
             long userId = long.Parse(User.Identity.Name);
             fileEntity.OwnerId = userId;
             bool exists = await _fileManager.IsExist(fileEntity.ParentId, fileEntity.OwnerId, fileEntity.Name);
@@ -90,7 +90,7 @@ namespace ShareWithMe.Controllers
             {
                 return new JsonResult(new ResponseModel());
             }
-            List<DirectoryDto> files = CustomMapper<FileEntity, DirectoryDto>.MapList(Entities);
+            List<DirectoryDto> files = Mapper<FileEntity, DirectoryDto>.MapList(Entities);
             return new JsonResult(new ResponseModel(data: new { files }));
         }
 
@@ -100,7 +100,7 @@ namespace ShareWithMe.Controllers
         {
             long userId = long.Parse(User.Identity.Name);
             var Entities = await _fileManager.GetDeletedFiles(userId);
-            List<DeletedFileDto> files = CustomMapper<FileEntity, DeletedFileDto>.MapList(Entities);
+            List<DeletedFileDto> files = Mapper<FileEntity, DeletedFileDto>.MapList(Entities);
             return new JsonResult(new ResponseModel(data: new { files }));
         }
 
@@ -199,7 +199,7 @@ namespace ShareWithMe.Controllers
             {
                 return new JsonResult(new ResponseModel(success: false));
             }
-            var file = CustomMapper<FileEntity, FileDto>.Map(entity);
+            var file = Mapper<FileEntity, FileDto>.Map(entity);
             file.Size = new FileInfo(Path.Combine(_env.WebRootPath, file.Path)).Length / Math.Pow(1024, 2);
             file.Duration = Dir.GetVideoDuration(Path.Combine(_env.WebRootPath, file.Path));
             return new JsonResult(new ResponseModel(data: file));
@@ -281,11 +281,11 @@ namespace ShareWithMe.Controllers
             {
                 files.Add(entity.File);
             }
-            List<SharedFileDto> entities = CustomMapper<FileEntity, SharedFileDto>.MapList(files);
+            List<SharedFileDto> entities = Mapper<FileEntity, SharedFileDto>.MapList(files);
             entities.ForEach(x =>
             {
                 x.Duration = Dir.GetVideoDuration(Path.Combine(_env.WebRootPath, x.Path));
-                x.Owner = CustomMapper<UserEntity, UserDto>.Map(_userManager.GetAsync(u => u.Id == x.UserId).Result);
+                x.Owner = Mapper<User, UserDto>.Map(_userManager.GetAsync(u => u.Id == x.UserId).Result);
                 x.Size = new FileInfo(Path.Combine(_env.WebRootPath, x.Path)).Length / Math.Pow(1024, 2);
             });
             return new JsonResult(new ResponseModel(message: "Success", data: new { files = entities }));
@@ -304,7 +304,7 @@ namespace ShareWithMe.Controllers
                 {
                     await _sharedFileManager.DeleteAsync(userfile);
 
-                    /*if (file.Type == FileEntityType.Folder)
+                    if (file.Type == FileEntityType.Folder)
                     {
                         foreach (var item in allFiles.ToList())
                         {
@@ -313,7 +313,7 @@ namespace ShareWithMe.Controllers
                                 await _sharedFileManager.DeleteAsync(new SharedFileEntity { UserId = userfile.UserId, FileId = item.Id });
                             }
                         }
-                    }*/
+                    }
                 }
             }
 
@@ -323,7 +323,7 @@ namespace ShareWithMe.Controllers
                 {
                     await _sharedFileManager.CreateAsync(new SharedFileEntity { FileId = input.FileId, UserId = userId });
 
-                    /*if (file.Type == FileEntityType.Folder)
+                    if (file.Type == FileEntityType.Folder)
                     {
                         foreach (var item in allFiles.ToList())
                         {
@@ -332,7 +332,7 @@ namespace ShareWithMe.Controllers
                                 await _sharedFileManager.CreateAsync(new SharedFileEntity { FileId = item.Id, UserId = userId });
                             }
                         }
-                    }*/
+                    }
                 }
             }
             return new JsonResult(new ResponseModel(message: "Success"));
@@ -349,7 +349,7 @@ namespace ShareWithMe.Controllers
             {
                 return new JsonResult(new ResponseModel(message: "Error while uploading file", code: HttpStatusCode.BadRequest, success: false, errors: new List<string> { "Wrong file type selected" }));
             }
-            var fileEntity = CustomMapper<UploadFileDto, FileEntity>.Map(input);
+            var fileEntity = Mapper<UploadFileDto, FileEntity>.Map(input);
 
             long userId = long.Parse(User.Identity.Name);
             var user = await _userManager.GetAsync(x => x.Id == userId);
@@ -438,7 +438,7 @@ namespace ShareWithMe.Controllers
             byte[] fileBytes = System.IO.File.ReadAllBytes(Path.Combine(_env.WebRootPath, fileEntity.Path));
 
             return File(fileBytes, "application/octet-stream", fileEntity.Name);
-        }
+        }*/
 
 
     }

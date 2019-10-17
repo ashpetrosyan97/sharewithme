@@ -1,8 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SWM.Core.Accounts;
 using SWM.Core.Repositories;
+using SWM.Helpers;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,37 +13,50 @@ namespace SWM.Core.Users
 {
     public class UserManager : IUserManager
     {
-        private readonly IRepository<UserEntity, long> _userRepository;
-
-        public UserManager(IRepository<UserEntity, long> userRepository)
+        private readonly IUnitOfWork uow;
+        public UserManager(IUnitOfWork uow)
         {
-            _userRepository = userRepository;
+            this.uow = uow;
         }
 
-        public async Task CreateAsync(UserEntity input)
+        public async Task CreateAsync(User user)
         {
-            await _userRepository.InsertAsync(input);
+            try
+            {
+                var product = await uow.Repository<User>().InsertAsync(user);
+                await uow.CommitAsync();
+            }
+            catch (Exception e)
+            {
+                uow.Rollback();
+                if (e is DbUpdateException)
+                    throw new CoreException(e.InnerException);
+                else
+                    throw new CoreException();
+            }
         }
 
-        public async Task UpdateAsync(UserEntity input)
+        public async Task UpdateAsync(User input)
         {
-            await _userRepository.UpdateAsync(input);
+            uow.Repository<User>().Update(input);
+            await uow.CommitAsync();
         }
 
-        public async Task DeleteAsync(UserEntity input)
+        public async Task DeleteAsync(User input)
         {
-            await _userRepository.DeleteAsync(input);
+            uow.Repository<User>().Delete(input);
         }
 
-        public async Task<UserEntity> GetAsync(Expression<Func<UserEntity, bool>> predicate)
+        public async Task<User> GetAsync(Expression<Func<User, bool>> predicate)
         {
-            return await _userRepository.GetAsync(predicate, x => x.Account, x => x.UsersSharedFiles);
+            return await uow.Repository<User>().GetAsync(predicate, x => x.Include(u => u.Account).Include(x => x.UsersSharedFiles));
         }
 
-        public async Task<List<UserEntity>> GetAll()
+        public async Task<List<User>> GetAll()
         {
-            return await _userRepository
-                .GetAllIncluding(x => x.Account)
+            return await uow.Repository<User>()
+                .GetAllEntities()
+                .Include(x => x.Account)
                 .ToListAsync();
         }
     }

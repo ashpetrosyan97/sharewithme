@@ -1,17 +1,14 @@
-﻿using Microsoft.EntityFrameworkCore;
-using SWM.Core.Accounts;
-using SWM.Core.Files;
+﻿using SWM.Core.Accounts;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text;
 
 namespace SWM.Core.Users
 {
-    [Table("Users")]
-    public class UserEntity : Entity<long>
+    public class User
     {
+        public long Id { get; set; }
         public string Name { get; set; }
         public string Surname { get; set; }
         public string Country { get; set; }
@@ -20,7 +17,7 @@ namespace SWM.Core.Users
         [Required]
         public string Username { get; set; }
         [Required]
-        public string Password { get; set; }
+        public string PasswordHash { get; set; }
         public string PhoneNumber { get; set; }
         [Required]
         public int AccountId { get; set; }

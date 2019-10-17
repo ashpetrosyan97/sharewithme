@@ -1,5 +1,6 @@
 ﻿using MediaInfoLib;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
 using SWM.Core.Files;
 using SWM.Core.Users;
 using System;
@@ -13,7 +14,7 @@ namespace ShareWithMe.Common
 {
     public class Dir
     {
-        public static async Task<double> GetUsedSpace(long id, IHostingEnvironment env, IFileManager fileManager)
+        public static async Task<double> GetUsedSpace(long id, IWebHostEnvironment env, IFileManager fileManager)
         {
             var files = await fileManager.GetAll(id);
 
@@ -30,7 +31,7 @@ namespace ShareWithMe.Common
             return Math.Round(b / Math.Pow(1024, 2), 1);
         }
 
-        public static async Task<double> GetFreeSpase(UserEntity user, IHostingEnvironment env, IFileManager fileManager)
+        public static async Task<double> GetFreeSpase(User user, IWebHostEnvironment env, IFileManager fileManager)
         {
             double usedSpace = await GetUsedSpace(user.Id, env, fileManager);
             return user.Account.StorageSize - usedSpace;

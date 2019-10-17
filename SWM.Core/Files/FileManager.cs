@@ -10,25 +10,23 @@ namespace SWM.Core.Files
 {
     public class FileManager : IFileManager
     {
-        private readonly IRepository<FileEntity, long> _fileRepository;
-        private readonly IRepository<SharedFileEntity, long> _sharedFileRepository;
-        public FileManager(IRepository<FileEntity, long> fileRepository, IRepository<SharedFileEntity, long> sharedFileRepository)
+        private readonly IUnitOfWork uow;
+        public FileManager(IUnitOfWork uow)
         {
-            _fileRepository = fileRepository;
-            _sharedFileRepository = sharedFileRepository;
+            this.uow = uow;
         }
 
         public async Task<FileEntity> CreateAsync(FileEntity input)
         {
-            return await _fileRepository.InsertAsync(input);
+            return await uow.Repository<FileEntity>().InsertAsync(input);
 
-            /* var sharedParent = await _sharedFileRepository.GetAsync(x => x.FileId == input.ParentId, x => x.User, x => x.File);
+            /* var sharedParent = await uow.Repository<SharedFileEntity>().GetAsync(x => x.FileId == input.ParentId, x => x.User, x => x.File);
 
              if (sharedParent != null)
              {
                  foreach (var item in sharedParent.File.UsersSharedFiles)
                  {
-                     await _sharedFileRepository.InsertAsync(new SharedFileEntity { FileId = input.Id, UserId = item.UserId });
+                     await uow.Repository<SharedFileEntity>().InsertAsync(new SharedFileEntity { FileId = input.Id, UserId = item.UserId });
                  }
              }*/
         }
@@ -37,22 +35,22 @@ namespace SWM.Core.Files
         {
             input.IsDeleted = true;
             input.DeletionTime = DateTime.Now;
-            await _fileRepository.UpdateAsync(input);
-            var file = await _sharedFileRepository.GetAsync(x => x.FileId == input.Id, x => x.User, x => x.File);
+            await uow.Repository<FileEntity>().UpdateAsync(input);
+            var file = await uow.Repository<SharedFileEntity>().GetAsync(x => x.FileId == input.Id, x => x.User, x => x.File);
             if (file != null)
             {
-                await _sharedFileRepository.DeleteAsync(file);
+                await uow.Repository<SharedFileEntity>().DeleteAsync(file);
             }
         }
 
         public async Task DeleteAsync(FileEntity input)
         {
-            await _fileRepository.DeleteAsync(input);
+            await uow.Repository<FileEntity>().DeleteAsync(input);
         }
 
         public async Task<List<FileEntity>> GetAll(long userId)
         {
-            return await _fileRepository.GetAll()
+            return await uow.Repository<FileEntity>().GetAll()
                 .Where(x => x.OwnerId == userId)
                 .Where(x => x.Path != null)
                 .Where(x => !x.IsDeleted)
@@ -64,7 +62,7 @@ namespace SWM.Core.Files
 
         public async Task<FileEntity> GetAsync(long id)
         {
-            return await _fileRepository.GetAsyncIncluding(x => x.Id == id, q => q.Include(f => f.UsersSharedFiles).ThenInclude(u => u.User));
+            return await uow.Repository<FileEntity>().GetAsyncIncluding(x => x.Id == id, q => q.Include(f => f.UsersSharedFiles).ThenInclude(u => u.User));
         }
 
         public async Task<bool> IsExist(long parentId, long userId, string name)
@@ -81,18 +79,18 @@ namespace SWM.Core.Files
         public async Task UpdateAsync(FileEntity input)
         {
             input.LastModificationTime = DateTime.Now;
-            await _fileRepository.UpdateAsync(input);
+            await uow.Repository<FileEntity>().UpdateAsync(input);
         }
 
         public async Task RestoreAsync(FileEntity input)
         {
             input.IsDeleted = false;
-            await _fileRepository.UpdateAsync(input);
+            await uow.Repository<FileEntity>().UpdateAsync(input);
         }
 
         public async Task<List<FileEntity>> GetDeletedFiles(long userId)
         {
-            return await _fileRepository.GetAll()
+            return await uow.Repository<FileEntity>().GetAll()
                 .Where(x => x.OwnerId == userId)
                 .Where(x => x.Type == FileEntityType.File)
                 .Where(x => x.IsDeleted)

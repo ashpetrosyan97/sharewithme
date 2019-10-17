@@ -1,14 +1,10 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SignalR;
+using ShareWithMe.Common;
 using SWM.Core.Files;
 using SWM.Core.Users;
-using ShareWithMe.Common;
-using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace ShareWithMe.Hubs
@@ -19,8 +15,8 @@ namespace ShareWithMe.Hubs
         public static ConcurrentDictionary<long, string> Connections = new ConcurrentDictionary<long, string>();
         public readonly IUserManager _userManager;
         public readonly IFileManager _fileManager;
-        private readonly IHostingEnvironment _env;
-        public ProgressHub(IUserManager usermanager, IHostingEnvironment env, IFileManager fileManager)
+        private readonly IWebHostEnvironment _env;
+        public ProgressHub(IUserManager usermanager, IWebHostEnvironment env, IFileManager fileManager)
         {
             _env = env;
             _userManager = usermanager;

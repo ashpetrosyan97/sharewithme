@@ -7,9 +7,9 @@ using System.Text;
 
 namespace SWM.Core.Files
 {
-    [Table("Files")]
-    public class FileEntity : Entity<long>
+    public class FileEntity
     {
+        public long Id { get; set; }
         [Required]
         public string Name { get; set; }
         [Required]

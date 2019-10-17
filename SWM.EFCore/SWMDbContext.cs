@@ -11,7 +11,7 @@ namespace SWM.EFCore
 {
     public class SWMDbContext : DbContext
     {
-        public DbSet<UserEntity> Users { get; set; }
+        public DbSet<User> Users { get; set; }
         public DbSet<AccountEntity> Accounts { get; set; }
         public DbSet<FileEntity> Files { get; set; }
         public DbSet<SharedFileEntity> SharedFiles { get; set; }
@@ -46,12 +46,12 @@ namespace SWM.EFCore
                 .WithMany(c => c.UsersSharedFiles)
                 .HasForeignKey(bc => bc.UserId);
 
-            modelBuilder.Entity<UserEntity>()
+            modelBuilder.Entity<User>()
                 .HasAlternateKey(u => u.Username);
-            modelBuilder.Entity<UserEntity>()
+            modelBuilder.Entity<User>()
                 .HasIndex(u => u.PhoneNumber)
                 .IsUnique();
-            modelBuilder.Entity<UserEntity>()
+            modelBuilder.Entity<User>()
                 .HasIndex(u => u.Email)
                 .IsUnique();
         }

@@ -31,12 +31,12 @@ namespace ShareWithMe.Controllers
     {
         private IConfiguration _configuration { get; }
         private readonly IUserManager _userManager;
-        private readonly IHostingEnvironment _env;
+        private readonly IWebHostEnvironment _env;
         private readonly SmtpClient _smtpClient;
         private readonly IFileManager _fileManager;
         private readonly IHubContext<ProgressHub, IProgressHub> _hub;
         ILogger<AuthController> _logger;
-        public AuthController(IUserManager userManager, IConfiguration config, IFileManager fileManager, IHostingEnvironment env,  IHubContext<ProgressHub, IProgressHub> hub, ILogger<AuthController> logger, SmtpClient smtpClient)
+        public AuthController(IUserManager userManager, IConfiguration config, IFileManager fileManager, IWebHostEnvironment env,  IHubContext<ProgressHub, IProgressHub> hub, ILogger<AuthController> logger, SmtpClient smtpClient)
         {
             _logger = logger;
             _hub = hub;
@@ -47,7 +47,7 @@ namespace ShareWithMe.Controllers
             _configuration = config;
         }
 
-        [AllowAnonymous]
+       /* [AllowAnonymous]
         [HttpPost]
         public async Task<JsonResult> Login([FromForm]AuthenticationModel login)
         {
@@ -62,7 +62,7 @@ namespace ShareWithMe.Controllers
                     ));
             }
 
-            if (!Password.Verify(string.IsNullOrEmpty(login.Password) ? "" : login.Password, user.Password))
+            if (!Password.Verify(string.IsNullOrEmpty(login.Password) ? "" : login.Password, user.PasswordHash))
             {
                 return new JsonResult(new ResponseModel(
                     errors: new List<string> { "Wrong username or password" },
@@ -76,7 +76,7 @@ namespace ShareWithMe.Controllers
             await _userManager.UpdateAsync(user);
 
             var tokenString = GenerateJSONWebToken(user.Id);
-            var userDetails = CustomMapper<UserEntity, UserDto>.Map(user);
+            var userDetails = Mapper<User, UserDto>.Map(user);
             return new JsonResult(new ResponseModel(
                     code: HttpStatusCode.OK,
                     message: "Success",
@@ -106,7 +106,7 @@ namespace ShareWithMe.Controllers
                         message: "Authentication failed!"
                         ));
                 }
-                var userDetails = CustomMapper<UserEntity, UserDto>.Map(User);
+                var userDetails = Mapper<User, UserDto>.Map(User);
                 return new JsonResult(new ResponseModel(code: HttpStatusCode.OK, message: "Success", data: new { user = userDetails }));
             }
 
@@ -140,7 +140,7 @@ namespace ShareWithMe.Controllers
                 msg.From.Add(new MailboxAddress("Online Storage", "noreply@onlinestorage.com"));
                 msg.To.Add(new MailboxAddress(user.Name, user.Email));
                 await _smtpClient.SendAsync(msg);
-                user.Password = Password.Hash(psw);
+                user.PasswordHash = Password.Hash(psw);
                 await _userManager.UpdateAsync(user);
                 return new JsonResult(new ResponseModel(message: "Success"));
             }
@@ -183,7 +183,7 @@ namespace ShareWithMe.Controllers
             };
             var claims = handler.ValidateToken(token, validations, out tokenSecure);
             return long.Parse(claims.Identity.Name);
-        }
+        }*/
 
     }
 }

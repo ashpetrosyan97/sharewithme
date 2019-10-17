@@ -10,24 +10,24 @@ namespace SWM.Core.SharedFiles
 {
     public class SharedFileManager : ISharedFileManager
     {
-        private readonly IRepository<SharedFileEntity, long> _sharedFileRepository;
-        public SharedFileManager(IRepository<SharedFileEntity, long> sharedFileRepository)
+        private readonly IUnitOfWork uow;
+        public SharedFileManager(IUnitOfWork uow)
         {
-            _sharedFileRepository = sharedFileRepository;
+            this.uow = uow;
         }
         public async Task<SharedFileEntity> CreateAsync(SharedFileEntity input)
         {
-            return await _sharedFileRepository.InsertAsync(input);
+            return await uow.Repository<SharedFileEntity>().InsertAsync(input);
         }
 
         public async Task DeleteAsync(SharedFileEntity input)
         {
-            await _sharedFileRepository.DeleteAsync(input);
+            await uow.Repository<SharedFileEntity>().DeleteAsync(input);
         }
 
         public async Task<List<SharedFileEntity>> GetAll(long userId)
         {
-            return await _sharedFileRepository.GetAllIncluding(f => f.File, f => f.User)
+            return await uow.Repository<SharedFileEntity>().GetAllIncluding(f => f.File, f => f.User)
                 .Where(x => x.UserId == userId)
                 .ToListAsync();
         }
