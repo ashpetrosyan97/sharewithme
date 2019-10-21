@@ -35,6 +35,7 @@ namespace ShareWithMe
                  cfg.CreateMap<CreateCategoryDto, Category>();
                  cfg.CreateMap<EditCategoryDto, Category>();*/
                  cfg.CreateMap<User, UserDto>();
+                 cfg.CreateMap<Account, AccountDto>();
                  cfg.CreateMap<UpdateUserDto, User>()
                        .ForMember(u => u.PasswordHash, r => r.MapFrom((e, u) => string.IsNullOrEmpty(e.Password) ? null : Hasher.HashPassword(u, e.Password)));
                  cfg.CreateMap<CreateUserDto, User>()

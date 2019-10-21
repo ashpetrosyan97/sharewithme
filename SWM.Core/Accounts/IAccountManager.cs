@@ -7,10 +7,10 @@ namespace SWM.Core.Accounts
 {
     interface IAccountManager
     {
-        Task CreateAsync(AccountEntity input);
-        Task UpdateAsync(AccountEntity input);
-        Task DeleteAsync(AccountEntity input);
-        Task<AccountEntity> GetAsync(long id);
-        Task<List<AccountEntity>> GetAll();
+        Task CreateAsync(Account input);
+        Task UpdateAsync(Account input);
+        Task DeleteAsync(Account input);
+        Task<Account> GetAsync(long id);
+        Task<List<Account>> GetAll();
     }
 }

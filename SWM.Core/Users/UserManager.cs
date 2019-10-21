@@ -45,11 +45,13 @@ namespace SWM.Core.Users
         public async Task DeleteAsync(User input)
         {
             uow.Repository<User>().Delete(input);
+            await uow.CommitAsync();
         }
 
         public async Task<User> GetAsync(Expression<Func<User, bool>> predicate)
         {
-            return await uow.Repository<User>().GetAsync(predicate, x => x.Include(u => u.Account).Include(x => x.UsersSharedFiles));
+            return await uow.Repository<User>().GetAsync(predicate, x => x.Include(u => u.Account));
+            //.Include(x => x.UsersSharedFiles)) ;
         }
 
         public async Task<List<User>> GetAll()

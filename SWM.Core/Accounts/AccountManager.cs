@@ -16,29 +16,31 @@ namespace SWM.Core.Accounts
         {
             this.uow = uow;
         }
-        public async Task CreateAsync(AccountEntity input)
+        public async Task CreateAsync(Account input)
         {
-            await uow.Repository<AccountEntity>().InsertAsync(input);
+            await uow.Repository<Account>().InsertAsync(input);
         }
 
-        public async Task DeleteAsync(AccountEntity input)
+        public async Task DeleteAsync(Account input)
         {
-            await uow.Repository<AccountEntity>().DeleteAsync(input);
+            uow.Repository<Account>().Delete(input);
+            await uow.CommitAsync();
         }
 
-        public async Task<List<AccountEntity>> GetAll()
+        public async Task<List<Account>> GetAll()
         {
-            return await uow.Repository<AccountEntity>().GetAll().ToListAsync();
+            return await uow.Repository<Account>().GetAllEntities().ToListAsync();
         }
 
-        public async Task<AccountEntity> GetAsync(long id)
+        public async Task<Account> GetAsync(long id)
         {
-            return await uow.Repository<AccountEntity>().GetAsync(x => x.Id == id);
+            return await uow.Repository<Account>().GetAsync(x => x.Id == id);
         }
 
-        public async Task UpdateAsync(AccountEntity input)
+        public async Task UpdateAsync(Account input)
         {
-            await uow.Repository<AccountEntity>().UpdateAsync(input);
+            uow.Repository<Account>().Update(input);
+            await uow.CommitAsync();
         }
     }
 }

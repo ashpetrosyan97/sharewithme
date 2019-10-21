@@ -39,6 +39,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="Controllers\FilesController.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\SWM.Application\SWM.Application.csproj" />
     <ProjectReference Include="..\SWM.Helpers\SWM.Helpers.csproj" />
   </ItemGroup>

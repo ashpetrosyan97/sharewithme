@@ -1,7 +1,5 @@
 ﻿using MediaInfoLib;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Hosting;
-using SWM.Core.Files;
 using SWM.Core.Users;
 using System;
 using System.Diagnostics;
@@ -14,7 +12,7 @@ namespace ShareWithMe.Common
 {
     public class Dir
     {
-        public static async Task<double> GetUsedSpace(long id, IWebHostEnvironment env, IFileManager fileManager)
+      /*  public static async Task<double> GetUsedSpace(long id, IWebHostEnvironment env, IFileManager fileManager)
         {
             var files = await fileManager.GetAll(id);
 
@@ -35,7 +33,7 @@ namespace ShareWithMe.Common
         {
             double usedSpace = await GetUsedSpace(user.Id, env, fileManager);
             return user.Account.StorageSize - usedSpace;
-        }
+        }*/
         public static TimeSpan GetVideoDuration(string path)
         {
             string ffMPEG = "ff.exe";

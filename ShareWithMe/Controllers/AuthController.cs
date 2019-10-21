@@ -1,28 +1,24 @@
-﻿using System;
-using System.IO;
-using System.Net;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Security.Claims;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.IdentityModel.Tokens;
+﻿using MailKit.Net.Smtp;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.Extensions.Configuration;
-using SWM.Core.Users;
-using SWM.Core.Files;
-using SWM.Application;
-using SWM.Application.Users;
-using MailKit.Net.Smtp;
-using MimeKit;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
+using MimeKit;
 using ShareWithMe.Hubs;
 using ShareWithMe.Models;
-using ShareWithMe.Common;
-using Microsoft.Extensions.Logging;
+using SWM.Application.Users;
+using SWM.Core.Users;
+using SWM.Helpers;
+using System;
+using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
+using System.Net;
+using System.Security.Claims;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace ShareWithMe.Controllers
 {
@@ -33,64 +29,45 @@ namespace ShareWithMe.Controllers
         private readonly IUserManager _userManager;
         private readonly IWebHostEnvironment _env;
         private readonly SmtpClient _smtpClient;
-        private readonly IFileManager _fileManager;
+        //private readonly IFileManager _fileManager;
+        private readonly Mapper mapper;
         private readonly IHubContext<ProgressHub, IProgressHub> _hub;
-        ILogger<AuthController> _logger;
-        public AuthController(IUserManager userManager, IConfiguration config, IFileManager fileManager, IWebHostEnvironment env,  IHubContext<ProgressHub, IProgressHub> hub, ILogger<AuthController> logger, SmtpClient smtpClient)
+        public AuthController(IUserManager userManager, IConfiguration config, /*IFileManager fileManager,*/ IWebHostEnvironment env, IHubContext<ProgressHub, IProgressHub> hub, SmtpClient smtpClient, Mapper map)
         {
-            _logger = logger;
             _hub = hub;
-            _fileManager = fileManager;
+            mapper = map;
+            //  _fileManager = fileManager;
             _smtpClient = smtpClient;
             _env = env;
             _userManager = userManager;
             _configuration = config;
         }
 
-       /* [AllowAnonymous]
+        [AllowAnonymous]
         [HttpPost]
-        public async Task<JsonResult> Login([FromForm]AuthenticationModel login)
+        public async Task<ActionResult<dynamic>> Login([FromForm]AuthenticationModel input)
         {
-            _logger.LogInformation("test");
-            var user = await _userManager.GetAsync(x => x.Username == login.UserName.ToLower());
-            if (user == null)
-            {
-                return new JsonResult(new ResponseModel(errors: new List<string> { $"There is no registered user with username {login.UserName}" },
-                    success: false,
-                    code: HttpStatusCode.BadRequest,
-                    message: "Authentication failed!"
-                    ));
-            }
+            var userEntity = await _userManager.GetAsync(x => x.Username == input.UserName.ToLower());
+            if (userEntity == null)
+                throw new CoreException($"There is no registered user with username {input.UserName}");
 
-            if (!Password.Verify(string.IsNullOrEmpty(login.Password) ? "" : login.Password, user.PasswordHash))
-            {
-                return new JsonResult(new ResponseModel(
-                    errors: new List<string> { "Wrong username or password" },
-                    success: false,
-                    code: HttpStatusCode.BadRequest,
-                    message: "Authentication failed!"
-                    ));
-            }
+            var success = new PasswordHasher<User>().VerifyHashedPassword(userEntity, userEntity.PasswordHash, input.Password) == PasswordVerificationResult.Success;
 
-            user.LastLoginTime = DateTime.Now;
-            await _userManager.UpdateAsync(user);
+            if (!success)
+                throw new CoreException("Password is incorrect.", HttpStatusCode.BadRequest);
 
-            var tokenString = GenerateJSONWebToken(user.Id);
-            var userDetails = Mapper<User, UserDto>.Map(user);
-            return new JsonResult(new ResponseModel(
-                    code: HttpStatusCode.OK,
-                    message: "Success",
-                    data: new
-                    {
-                        user = userDetails,
-                        expires = (DateTime.Now.AddDays(1) - DateTime.Now).TotalSeconds,
-                        accessToken = tokenString,
-                    }));
+
+            userEntity.LastLoginTime = DateTime.Now;
+            await _userManager.UpdateAsync(userEntity);
+
+            var tokenString = GenerateJSONWebToken(userEntity.Id);
+            var userDetails = mapper.Map<User, UserDto>(userEntity);
+            return new { user = userDetails, expires = TimeSpan.FromDays(1).TotalMilliseconds, accessToken = tokenString };
         }
 
         [HttpGet]
         [Authorize]
-        public async Task<JsonResult> GetCurrentUserDetails()
+        public async Task<ActionResult<UserDto>> GetCurrentUserDetails()
         {
             var header = Request.Headers["Authorization"];
             if (header.ToString().StartsWith("Bearer "))
@@ -99,56 +76,38 @@ namespace ShareWithMe.Controllers
                 long id = GetAuthentiactedUserId(credValue);
                 var User = await _userManager.GetAsync(u => u.Id == id);
                 if (User == null)
-                {
-                    return new JsonResult(new ResponseModel(errors: new List<string> { $"There is no registered user with id {id}" },
-                        success: false,
-                        code: HttpStatusCode.BadRequest,
-                        message: "Authentication failed!"
-                        ));
-                }
-                var userDetails = Mapper<User, UserDto>.Map(User);
-                return new JsonResult(new ResponseModel(code: HttpStatusCode.OK, message: "Success", data: new { user = userDetails }));
+                    throw new CoreException($"There is no registered user with id {id}");
+                return mapper.Map<User, UserDto>(User);
             }
 
-            return new JsonResult(new ResponseModel(errors: new List<string> { $"Wrong authentication type detected.Use Bearer token" },
-                        success: false,
-                        code: HttpStatusCode.BadRequest,
-                        message: "Authentication failed!"
-                        )); ;
+            throw new CoreException($"Wrong authentication type detected.Use Bearer token");
         }
 
         [HttpPost]
-        public async Task<JsonResult> ResetPassword([FromForm]ResetPasswordDto input)
+        public async Task<ActionResult> ResetPassword([FromForm]ResetPasswordDto input)
         {
             var user = await _userManager.GetAsync(u => u.Username == input.Username && u.Email == input.Email);
             if (user == null)
             {
                 return new JsonResult(new ResponseModel(message: $"There is no user with email {user.Email}", code: HttpStatusCode.BadRequest, success: false));
             }
-            try
-            {
-                string psw = Password.Generate();
 
-                var msg = new MimeMessage
+            string psw = "random pswd";
+
+            var msg = new MimeMessage
+            {
+                Subject = "Password reset",
+                Body = new TextPart("plain")
                 {
-                    Subject = "Password reset",
-                    Body = new TextPart("plain")
-                    {
-                        Text = $"Dear {user.Name} your password has been reseted.{Environment.NewLine} Your new password is {psw}"
-                    }
-                };
-                msg.From.Add(new MailboxAddress("Online Storage", "noreply@onlinestorage.com"));
-                msg.To.Add(new MailboxAddress(user.Name, user.Email));
-                await _smtpClient.SendAsync(msg);
-                user.PasswordHash = Password.Hash(psw);
-                await _userManager.UpdateAsync(user);
-                return new JsonResult(new ResponseModel(message: "Success"));
-            }
-            catch (Exception)
-            {
-                return new JsonResult(new ResponseModel(message: "Something went wrong", code: HttpStatusCode.BadRequest, success: false));
-            }
-
+                    Text = $"Dear {user.Name} your password has been reseted.{Environment.NewLine} Your new password is {psw}"
+                }
+            };
+            msg.From.Add(new MailboxAddress("Online Storage", "noreply@onlinestorage.com"));
+            msg.To.Add(new MailboxAddress(user.Name, user.Email));
+            await _smtpClient.SendAsync(msg);
+            user.PasswordHash = new PasswordHasher<User>().HashPassword(user, psw);
+            await _userManager.UpdateAsync(user);
+            return Ok();
         }
 
 
@@ -156,7 +115,7 @@ namespace ShareWithMe.Controllers
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Authentication:SecretKey"]));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256Signature);
-            var claimsData = new[] { new Claim(ClaimTypes.Name, id.ToString()) };
+            var claimsData = new[] { new Claim(ClaimTypes.Name, $"{id}" )};
 
             var token = new JwtSecurityToken(
                     issuer: _configuration["Authentication:Issuer"],
@@ -183,7 +142,7 @@ namespace ShareWithMe.Controllers
             };
             var claims = handler.ValidateToken(token, validations, out tokenSecure);
             return long.Parse(claims.Identity.Name);
-        }*/
+        }
 
     }
 }

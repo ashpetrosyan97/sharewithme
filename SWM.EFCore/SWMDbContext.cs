@@ -1,20 +1,15 @@
-﻿using SWM.Core.Users;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Microsoft.EntityFrameworkCore;
 using SWM.Core.Accounts;
-using SWM.Core;
-using SWM.Core.Files;
+using SWM.Core.Users;
 
 namespace SWM.EFCore
 {
     public class SWMDbContext : DbContext
     {
         public DbSet<User> Users { get; set; }
-        public DbSet<AccountEntity> Accounts { get; set; }
-        public DbSet<FileEntity> Files { get; set; }
-        public DbSet<SharedFileEntity> SharedFiles { get; set; }
+        public DbSet<Account> Accounts { get; set; }
+        //public DbSet<FileEntity> Files { get; set; }
+       // public DbSet<SharedFileEntity> SharedFiles { get; set; }
 
         public SWMDbContext(DbContextOptions<SWMDbContext> options)
             : base(options)
@@ -24,13 +19,13 @@ namespace SWM.EFCore
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            modelBuilder.Entity<AccountEntity>()
+            modelBuilder.Entity<Account>()
                  .HasMany(u => u.Users);
-            modelBuilder.Entity<AccountEntity>()
-                .HasData(new AccountEntity { Id = 1, Name = AccountTypes.Free.ToString(), Type = AccountTypes.Free, StorageSize = 10240, Price = 0 },
-                         new AccountEntity { Id = 2, Name = AccountTypes.Premium.ToString(), Type = AccountTypes.Premium, StorageSize = 512000, Price = 250 });
+            modelBuilder.Entity<Account>()
+                .HasData(new Account { Id = 1, Name = AccountTypes.Free.ToString(), Type = AccountTypes.Free, StorageSize = 10240, Price = 0 },
+                         new Account { Id = 2, Name = AccountTypes.Premium.ToString(), Type = AccountTypes.Premium, StorageSize = 512000, Price = 250 });
 
-            modelBuilder.Entity<SharedFileEntity>()
+            /*modelBuilder.Entity<SharedFileEntity>()
                 .HasIndex(sf => new { sf.FileId, sf.UserId })
                 .IsUnique();
             modelBuilder.Entity<SharedFileEntity>()
@@ -44,7 +39,7 @@ namespace SWM.EFCore
             modelBuilder.Entity<SharedFileEntity>()
                 .HasOne(bc => bc.User)
                 .WithMany(c => c.UsersSharedFiles)
-                .HasForeignKey(bc => bc.UserId);
+                .HasForeignKey(bc => bc.UserId);*/
 
             modelBuilder.Entity<User>()
                 .HasAlternateKey(u => u.Username);

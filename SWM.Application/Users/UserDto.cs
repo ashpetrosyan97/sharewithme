@@ -1,10 +1,5 @@
 ﻿using SWM.Application.Accounts;
-using SWM.Application.Files;
-using SWM.Core.Accounts;
-using SWM.Core.Files;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace SWM.Application.Users
 {

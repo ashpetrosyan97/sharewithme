@@ -23,13 +23,13 @@ namespace SWM.Core.Users
         public int AccountId { get; set; }
         [ForeignKey(nameof(AccountId))]
         [Required]
-        public AccountEntity Account { get; set; }
+        public Account Account { get; set; }
         public DateTime? LastLoginTime { get; set; } = null;
         public DateTime CreationTime { get; set; } = DateTime.Now;
 
 
         public string FilesDirectory { get; set; }
         public string ProfileImage { get; set; }
-        public virtual List<SharedFileEntity> UsersSharedFiles { get; set; }
+        //public virtual List<SharedFileEntity> UsersSharedFiles { get; set; }
     }
 }
