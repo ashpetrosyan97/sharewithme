@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http.Features;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.EntityFrameworkCore;
@@ -22,7 +21,6 @@ using SWM.Core.Users;
 using SWM.EFCore;
 using System.Collections.Generic;
 using System.IO;
-using Serilog.Extensions.Logging.File;
 using System.Net;
 using System.Reflection;
 using System.Text;
@@ -105,7 +103,7 @@ namespace ShareWithMe
 
             services.Configure<ApiBehaviorOptions>(options => options.SuppressModelStateInvalidFilter = true);
 
-            services.AddTransient<SmtpClient>((serviceProvider) =>
+           /* services.AddTransient<SmtpClient>((serviceProvider) =>
             {
                 var config = serviceProvider.GetRequiredService<IConfiguration>();
                 ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
@@ -115,7 +113,7 @@ namespace ShareWithMe
                 client.Connect(Configuration["Email:Smtp:Host"], int.Parse(Configuration["Email:Smtp:Port"]), false);
                 client.Authenticate(Configuration["Email:Smtp:Username"], Configuration["Email:Smtp:Password"]);
                 return client;
-            });
+            });*/
 
             services.AddSwaggerGen(c =>
             {

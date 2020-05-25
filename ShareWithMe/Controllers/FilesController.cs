@@ -303,17 +303,6 @@ namespace ShareWithMe.Controllers
                 if (!input.UserId.Contains(userfile.UserId))
                 {
                     await _sharedFileManager.DeleteAsync(userfile);
-
-                    /*if (file.Type == FileEntityType.Folder)
-                    {
-                        foreach (var item in allFiles.ToList())
-                        {
-                            if (item.Path.StartsWith($"{file.Path}\\"))
-                            {
-                                await _sharedFileManager.DeleteAsync(new SharedFileEntity { UserId = userfile.UserId, FileId = item.Id });
-                            }
-                        }
-                    }*/
                 }
             }
 
@@ -322,17 +311,6 @@ namespace ShareWithMe.Controllers
                 if (file.UsersSharedFiles.Count == 0 || file.UsersSharedFiles.ToList().Any(u => u.UserId != userId))
                 {
                     await _sharedFileManager.CreateAsync(new SharedFileEntity { FileId = input.FileId, UserId = userId });
-
-                    /*if (file.Type == FileEntityType.Folder)
-                    {
-                        foreach (var item in allFiles.ToList())
-                        {
-                            if (item.Path.StartsWith($"{file.Path}\\"))
-                            {
-                                await _sharedFileManager.CreateAsync(new SharedFileEntity { FileId = item.Id, UserId = userId });
-                            }
-                        }
-                    }*/
                 }
             }
             return new JsonResult(new ResponseModel(message: "Success"));

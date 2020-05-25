@@ -32,16 +32,16 @@ namespace ShareWithMe.Controllers
         private IConfiguration _configuration { get; }
         private readonly IUserManager _userManager;
         private readonly IHostingEnvironment _env;
-        private readonly SmtpClient _smtpClient;
+       // private readonly SmtpClient _smtpClient;
         private readonly IFileManager _fileManager;
         private readonly IHubContext<ProgressHub, IProgressHub> _hub;
         ILogger<AuthController> _logger;
-        public AuthController(IUserManager userManager, IConfiguration config, IFileManager fileManager, IHostingEnvironment env,  IHubContext<ProgressHub, IProgressHub> hub, ILogger<AuthController> logger, SmtpClient smtpClient)
+        public AuthController(IUserManager userManager, IConfiguration config, IFileManager fileManager, IHostingEnvironment env,  IHubContext<ProgressHub, IProgressHub> hub, ILogger<AuthController> logger/*, SmtpClient smtpClient*/)
         {
             _logger = logger;
             _hub = hub;
             _fileManager = fileManager;
-            _smtpClient = smtpClient;
+           // _smtpClient = smtpClient;
             _env = env;
             _userManager = userManager;
             _configuration = config;
@@ -117,7 +117,7 @@ namespace ShareWithMe.Controllers
                         )); ;
         }
 
-        [HttpPost]
+      /* [HttpPost]
         public async Task<JsonResult> ResetPassword([FromForm]ResetPasswordDto input)
         {
             var user = await _userManager.GetAsync(u => u.Username == input.Username && u.Email == input.Email);
@@ -150,7 +150,7 @@ namespace ShareWithMe.Controllers
             }
 
         }
-
+        */
 
         private string GenerateJSONWebToken(long id)
         {

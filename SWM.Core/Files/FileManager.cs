@@ -21,16 +21,6 @@ namespace SWM.Core.Files
         public async Task<FileEntity> CreateAsync(FileEntity input)
         {
             return await _fileRepository.InsertAsync(input);
-
-            /* var sharedParent = await _sharedFileRepository.GetAsync(x => x.FileId == input.ParentId, x => x.User, x => x.File);
-
-             if (sharedParent != null)
-             {
-                 foreach (var item in sharedParent.File.UsersSharedFiles)
-                 {
-                     await _sharedFileRepository.InsertAsync(new SharedFileEntity { FileId = input.Id, UserId = item.UserId });
-                 }
-             }*/
         }
 
         public async Task SoftDeleteAsync(FileEntity input)
